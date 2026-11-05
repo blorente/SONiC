@@ -59,7 +59,7 @@ probes during migration, then native templates and platform/feature settings for
 The kernel's specialized pipeline retains its documented exception; another specialized pipeline
 requires approval for that concrete approach. Tool/runtime declaration and hermeticity still apply.
 
-Prefer compatible existing project/shared rules, then BCR rules, then fixed source-built tools.
+Prefer maintained upstream BCR rulesets and toolchains when a compatible one provides the tool and satisfies the analyzed version/feature contract (as tar.bzl already does for archives); then compatible existing project/shared rules, then fixed source-built tools.
 Declared fixed prebuilt tools remain usable. Tools, interpreters, execution libraries, plugins,
 templates and data are execution inputs; headers and linked libraries for the output stay in target
 configuration. Reuse GNU Coreutils/Bash only under the project's established base-tool contract.
@@ -298,6 +298,8 @@ Before developing a dependency module or build rules, check [Bazel Central Regis
 If BCR already provides that dependency, **explicit user approval is required before developing a custom alternative**. This includes a separate SONiC module, renamed copy, wrapper or replacement rules. A missing required version, ABI mismatch or packaging difference does not waive approval: explain the central option, the verified gap and the smallest proposed adaptation first. General migration or build authorization alone is insufficient. Honor explicit approval already granted for that specific custom work; do not ask again within its scope.
 
 When a custom module is approved, or no BCR entry exists, reuse upstream build definitions and add only the missing integration. Record the central modules/versions checked, the decision, and any required approval in the PR or migration evidence. Do not duplicate upstream rules merely because a SONiC registry entry is convenient.
+
+The same check applies to execution tools. Before adding or extending a pinned DEB `build_tools` entry, check whether a maintained BCR module or toolchain provides the tool (for example `rules_bison`, `rules_flex`, `rules_m4`, `rules_doxygen`, `rules_perl`, `patchelf`, `gawk`, `pkgconf`). Prefer the upstream module when it satisfies the analyzed version/feature contract; an existing DEB entry does not outrank a maintained upstream module for new consumers. Record the modules checked when a DEB tool is still required. Migrating an existing DEB tool to a maintained upstream module follows the normal tool-validation requirements, and gaps found in an upstream module should be reported or fixed upstream before maintaining a divergent copy.
 
 ### Number maintained patches in application order
 

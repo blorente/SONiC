@@ -7,7 +7,7 @@ Read the [shared contract](common-contract.md) and applicable sections. Apply [h
 1. Declare actual required modules/repo aliases with pinned versions, including direct infra/SWIG/tar/rules_python dependencies.
 2. Read pinned BUILD/rule sources and verify executable/FilesToRunProvider/interpreters/templates/libraries; selected versions determine APIs/tool availability.
 3. Use tools or executable=True,cfg=exec. Target libraries belong in deps; data-only placement/copying is insufficient.
-4. Prefer existing project/shared targets, then BCR, then pinned sources. Producers propagate closure.
+4. Prefer maintained BCR rulesets/toolchains that satisfy the analyzed version/feature contract, then existing project/shared targets, then pinned sources, under the [BCR-first check](../SKILL.md#check-bazel-central-registry-before-custom-modules). Producers propagate closure.
 
 ```sh
 bazel query '@sonic_build_infra//tools/build_tools:*'
@@ -67,6 +67,8 @@ genrule(
 binary and its runtime use exec configuration/architecture. Cross builds run the generator on the executor and compile results for target. The interface retains binary runfiles and selects shared Trixie execution libraries, without private loader/LD_LIBRARY_PATH scripts. Producers still declare additional libraries/templates/plugins/subtools. Other languages follow actual SDK runtime contracts; rules_python still supplies py_binary interpreters/modules.
 
 ### Add DEB tools
+
+Add a DEB tool only after the [BCR-first check](../SKILL.md#check-bazel-central-registry-before-custom-modules) finds no maintained upstream module or toolchain satisfying the analyzed version/feature contract; record the modules checked in the task evidence.
 
 1. Establish actual program/data packages from analysis. Extend infra apt/requests.json and the common lock under [locking](dependency-locking.md), preserving existing versions and adding only required closure.
 2. Connect fixed exec packages in MODULE and tools/build_tools/BUILD. Select an appropriate runtime group and declare complete data/interpreter/library/subtool inputs.
@@ -309,7 +311,7 @@ Inspect actual image executable/toolchain attributes and producers; roles below 
 | openssl/signing_tool | Selected implementation | Algorithm/cert/key/payload, signature/image |
 | Compressors | Managed tools | Source layers/dictionaries/options/output |
 
-Use existing pinned APT/BCR/source tools in priority order. New APT tools retain locked packages and add only new inputs. Export full loaders/libraries/data/subtools, GRUB modules/fonts/config, mke2fs.conf and OpenSSL providers/config as needed. Keys follow authorized execution contracts and never appear in logs. Pass exec attributes and continue [image assembly](image-recipes.md).
+Use maintained BCR, existing pinned APT and source tools in that priority order. New APT tools retain locked packages and add only new inputs. Export full loaders/libraries/data/subtools, GRUB modules/fonts/config, mke2fs.conf and OpenSSL providers/config as needed. Keys follow authorized execution contracts and never appear in logs. Pass exec attributes and continue [image assembly](image-recipes.md).
 
 ## Completion
 
